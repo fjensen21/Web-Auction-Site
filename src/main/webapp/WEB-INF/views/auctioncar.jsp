@@ -56,7 +56,7 @@
         <label for="enddatetime">End Datetime: </label><br>
         <input type="datetime-local" id="enddatetime" name="enddatetime"><br>
 
-        <button type="submit">Submit</button>
+        <button type="submit">Post Auction</button>
     </form>
 </body>
 </html>

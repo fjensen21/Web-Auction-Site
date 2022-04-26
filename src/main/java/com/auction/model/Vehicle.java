@@ -1,7 +1,7 @@
 package com.auction.model;
 
 public class Vehicle {
-    private String vin;
+    private int vin;
     private String make;
     private String model;
     private String year;
@@ -13,11 +13,11 @@ public class Vehicle {
     private boolean isTruck = false;
     private boolean isMotorcycle = false;
 
-    public String getVin() {
+    public int getVin() {
         return vin;
     }
 
-    public void setVin(String vin) {
+    public void setVin(int vin) {
         this.vin = vin;
     }
 

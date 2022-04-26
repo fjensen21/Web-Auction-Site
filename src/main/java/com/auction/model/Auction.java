@@ -10,7 +10,7 @@ public class Auction {
     private int highest_bidder_id;
     private String end_datetime;
 
-    private int username;
+    private String username;
     private String post_datetime;
     private String vin;
     private double secret_minimum;
@@ -71,11 +71,11 @@ public class Auction {
         this.end_datetime = end_datetime;
     }
 
-    public int getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(int username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
