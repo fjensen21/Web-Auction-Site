@@ -33,6 +33,7 @@ public class VehicleDao {
             preparedStatement.setBoolean(9, v.isCar());
             preparedStatement.setBoolean(10, v.isTruck());
             preparedStatement.setBoolean(11, v.isMotorcycle());
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

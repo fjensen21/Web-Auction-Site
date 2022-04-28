@@ -7,12 +7,12 @@ import java.util.Random;
 
 public class Auction {
     private int auction_id;
-    private int highest_bidder_id;
+    private String highest_bidder_id;
     private String end_datetime;
 
     private String username;
     private String post_datetime;
-    private String vin;
+    private int vin;
     private double secret_minimum;
     private double increment;
     private double initial_price;
@@ -55,11 +55,11 @@ public class Auction {
         this.auction_id = auction_id;
     }
 
-    public int getHighest_bidder_id() {
+    public String getHighest_bidder_id() {
         return highest_bidder_id;
     }
 
-    public void setHighest_bidder_id(int highest_bidder_id) {
+    public void setHighest_bidder_id(String highest_bidder_id) {
         this.highest_bidder_id = highest_bidder_id;
     }
 
@@ -87,11 +87,11 @@ public class Auction {
         this.post_datetime = post_datetime;
     }
 
-    public String getVin() {
+    public int getVin() {
         return vin;
     }
 
-    public void setVin(String vin) {
+    public void setVin(int vin) {
         this.vin = vin;
     }
 

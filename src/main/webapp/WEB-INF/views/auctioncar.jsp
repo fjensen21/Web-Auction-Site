@@ -25,7 +25,7 @@
     <% } %>
     <form action="/auctioncar" method="post">
         <label for="vin">Vin: </label>
-        <input type="text" id="vin" name="vin"> <br>
+        <input type="number" id="vin" name="vin"> <br>
 
         <label for="make">Make: </label><br>
         <input type="text" id="make" name="make"><br>

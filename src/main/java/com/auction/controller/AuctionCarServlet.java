@@ -1,6 +1,7 @@
 package com.auction.controller;
 
 import com.auction.dao.AuctionDao;
+import com.auction.dao.VehicleDao;
 import com.auction.model.Auction;
 import com.auction.model.User;
 import com.auction.model.Vehicle;
@@ -10,6 +11,8 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+
 
 @WebServlet(name = "AuctionCarServlet", value = "/auctioncar")
 public class AuctionCarServlet extends HttpServlet {
@@ -28,9 +31,12 @@ public class AuctionCarServlet extends HttpServlet {
         String vin = request.getParameter("vin");
         User user = (User) request.getSession().getAttribute("user");
 
+
         AuctionDao auctionDao;
+        VehicleDao vehicleDao;
         try {
             auctionDao = new AuctionDao();
+            vehicleDao = new VehicleDao();
         } catch (SQLException e) {
             getServletContext().getRequestDispatcher("/index.jsp").forward(request,response);
             e.printStackTrace();
@@ -56,13 +62,21 @@ public class AuctionCarServlet extends HttpServlet {
 
 
             Auction a = new Auction();
-            a.setVin(request.getParameter("vin"));
+            a.setVin(Integer.parseInt(request.getParameter("vin")));
+            a.setEnd_datetime(request.getParameter("enddatetime"));
+            a.setUsername(user.getUsername());
+            a.setPost_datetime(LocalDateTime.now().toString());
             a.setSecret_minimum(Double.parseDouble(request.getParameter("secretmin")));
             a.setIncrement(Double.parseDouble(request.getParameter("increment")));
             a.setInitial_price(Double.parseDouble(request.getParameter("initprice")));
             a.setActive(true);
-            a.setUsername(user.getUsername());
-            a.setEnd_datetime(request.getParameter("enddatetime"));
+
+            // Post to database
+            vehicleDao.addVehicle(v);
+            auctionDao.addAuction(a);
+
+            // Redirect to homepage
+            response.sendRedirect("/userhome");
         }
     }
 }
