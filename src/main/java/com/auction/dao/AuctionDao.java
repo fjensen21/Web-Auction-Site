@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import com.auction.model.Auction;
+import com.auction.model.AuctionContainer;
+import com.auction.model.Vehicle;
 import com.auction.util.DbUtil;
 
 
@@ -29,8 +31,8 @@ public class AuctionDao {
 
     public void addAuction(Auction auction){
         // Create Auction row
-        String addAuction = "insert into auctions(auction_id,highest_bidder_id,end_datetime)" +
-                "values(?,?,?)";
+        String addAuction = "insert into auctions(auction_id,highest_bidder_id,end_datetime,active)" +
+                "values(?,?,?,?)";
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement(addAuction);
@@ -38,6 +40,7 @@ public class AuctionDao {
             preparedStatement.setInt(1, auction.getAuction_id());
             preparedStatement.setString(2, auction.getHighest_bidder_id());
             preparedStatement.setString(3, auction.getEnd_datetime());
+            preparedStatement.setBoolean(4, auction.isActive());
             preparedStatement.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
@@ -61,6 +64,60 @@ public class AuctionDao {
         } catch(SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<AuctionContainer> getNextNAuctions(int firstrow, int rowcount){
+        String getAuctions = "select *" +
+                "from vehicle v, auctions a, post p" +
+                "where a.auction_id = p.auction_id and v.vin = p.vin" +
+                "LIMIT ? OFFSET ?";
+        List<AuctionContainer> auctionContainers = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(getAuctions);
+            preparedStatement.setInt(1, rowcount);
+            preparedStatement.setInt(2, firstrow);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            // For each result in results set create auction and vehicle then add to auctionContainer than add to auctionContainers
+            while(rs.next()) {
+                Auction auction = new Auction();
+                Vehicle vehicle = new Vehicle();
+
+                vehicle.setVin(rs.getInt("vin"));
+                vehicle.setMake(rs.getString("make"));
+                vehicle.setModel(rs.getString("model"));
+                vehicle.setYear(rs.getString("year"));
+                vehicle.setColor(rs.getString("color"));
+                vehicle.setNumdoors(rs.getInt("num_doors"));
+                vehicle.setBed_size(rs.getInt("bed_size"));
+                vehicle.setPedal_size(rs.getInt("pedal_size"));
+                vehicle.setCar(rs.getBoolean("isCar"));
+                vehicle.setTruck(rs.getBoolean("isTruck"));
+                vehicle.setMotorcycle(rs.getBoolean("isMotorBike"));
+
+                auction.setAuction_id(rs.getInt("auction_id"));
+                auction.setHighest_bidder_id(rs.getString("highest_bidder_id"));
+                auction.setEnd_datetime(rs.getString(rs.getString("end_datetime")));
+                auction.setActive(rs.getBoolean("active"));
+                auction.setUsername(rs.getString("username"));
+                auction.setAuction_id(rs.getInt("auction_id"));
+                auction.setPost_datetime(rs.getString("post_datetime"));
+                auction.setVin(rs.getInt("vin"));
+                auction.setSecret_minimum(rs.getDouble("secret_minimum"));
+                auction.setIncrement(rs.getDouble("increment"));
+                auction.setInitial_price(rs.getDouble("initial_price"));
+
+                AuctionContainer ac = new AuctionContainer(auction, vehicle);
+                auctionContainers.add(ac);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return auctionContainers;
     }
 
 }
