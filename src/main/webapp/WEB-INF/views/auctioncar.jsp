@@ -44,13 +44,13 @@
 
         <h2>Auction Details</h2>
 
-        <label for="secretmin">Secret Minimum Bid: </label><br>
+        <label for="secretmin">Secret Minimum Bid ($): </label><br>
         <input type="number" id="secretmin" name="secretmin"><br>
 
-        <label for="increment">Increment: </label><br>
+        <label for="increment">Increment ($): </label><br>
         <input type="number" id="increment" name="increment"><br>
 
-        <label for="initprice">Initial Price: </label><br>
+        <label for="initprice">Initial Price ($): </label><br>
         <input type="number" id="initprice" name="initprice"><br>
 
         <label for="enddatetime">End Datetime: </label><br>
