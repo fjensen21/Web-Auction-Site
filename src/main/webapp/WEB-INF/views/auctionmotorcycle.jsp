@@ -39,8 +39,8 @@
     <label for="color">Color: </label><br>
     <input type="text" id="color" name="color"><br>
 
-    <label for="bedsize">Pedal Size (sqin): </label><br>
-    <input type="number" id="bedsize" name="bedsize"><br>
+    <label for="pedalsize">Pedal Size (sqin): </label><br>
+    <input type="number" id="pedalsize" name="pedalsize"><br>
 
     <h2>Auction Details</h2>
 

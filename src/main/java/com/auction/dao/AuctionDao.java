@@ -29,6 +29,7 @@ public class AuctionDao {
         return false;
     }
 
+
     public void addAuction(Auction auction){
         // Create Auction row
         String addAuction = "insert into auctions(auction_id,highest_bidder_id,end_datetime,active)" +
@@ -66,26 +67,17 @@ public class AuctionDao {
         }
     }
 
-    public List<AuctionContainer> getNextNAuctions(int firstrow, int rowcount){
-        String getAuctions = "select *" +
-                "from vehicle v, auctions a, post p" +
-                "where a.auction_id = p.auction_id and v.vin = p.vin" +
-                "LIMIT ? OFFSET ?";
-        List<AuctionContainer> auctionContainers = new ArrayList<>();
 
+    public AuctionContainer getAuctionContainerByAuctionId(int auctionId){
+        String getAuction = "select * from vehicle, auctions, post where auctions.auction_id=post.auction_id and vehicle.vin=post.vin and auctions.auction_id=?";
+        AuctionContainer ac;
         try {
-            PreparedStatement preparedStatement = connection
-                    .prepareStatement(getAuctions);
-            preparedStatement.setInt(1, rowcount);
-            preparedStatement.setInt(2, firstrow);
-
+            PreparedStatement preparedStatement = connection.prepareStatement(getAuction);
+            preparedStatement.setInt(1, auctionId);
             ResultSet rs = preparedStatement.executeQuery();
-
-            // For each result in results set create auction and vehicle then add to auctionContainer than add to auctionContainers
-            while(rs.next()) {
+            if(rs.next()) {
                 Auction auction = new Auction();
                 Vehicle vehicle = new Vehicle();
-
                 vehicle.setVin(rs.getInt("vin"));
                 vehicle.setMake(rs.getString("make"));
                 vehicle.setModel(rs.getString("model"));
@@ -100,7 +92,55 @@ public class AuctionDao {
 
                 auction.setAuction_id(rs.getInt("auction_id"));
                 auction.setHighest_bidder_id(rs.getString("highest_bidder_id"));
-                auction.setEnd_datetime(rs.getString(rs.getString("end_datetime")));
+                auction.setEnd_datetime(rs.getString("end_datetime"));
+                auction.setActive(rs.getBoolean("active"));
+                auction.setUsername(rs.getString("username"));
+                auction.setAuction_id(rs.getInt("auction_id"));
+                auction.setPost_datetime(rs.getString("post_datetime"));
+                auction.setVin(rs.getInt("vin"));
+                auction.setSecret_minimum(rs.getDouble("secret_minimum"));
+                auction.setIncrement(rs.getDouble("increment"));
+                auction.setInitial_price(rs.getDouble("initial_price"));
+
+                ac = new AuctionContainer(auction, vehicle);
+                return ac;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public List<AuctionContainer> getNextNAuctions(int firstrow, int rowcount){
+        String getAuctions = "select * from vehicle, auctions, post where auctions.auction_id=post.auction_id and vehicle.vin=post.vin LIMIT ? OFFSET ?;";
+        List<AuctionContainer> auctionContainers = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(getAuctions);
+            preparedStatement.setInt(1, rowcount);
+            preparedStatement.setInt(2, firstrow);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            // For each result in results set create auction and vehicle then add to auctionContainer than add to auctionContainers
+            while(rs.next()) {
+                Auction auction = new Auction();
+                Vehicle vehicle = new Vehicle();
+                vehicle.setVin(rs.getInt("vin"));
+                vehicle.setMake(rs.getString("make"));
+                vehicle.setModel(rs.getString("model"));
+                vehicle.setYear(rs.getString("year"));
+                vehicle.setColor(rs.getString("color"));
+                vehicle.setNumdoors(rs.getInt("num_doors"));
+                vehicle.setBed_size(rs.getInt("bed_size"));
+                vehicle.setPedal_size(rs.getInt("pedal_size"));
+                vehicle.setCar(rs.getBoolean("isCar"));
+                vehicle.setTruck(rs.getBoolean("isTruck"));
+                vehicle.setMotorcycle(rs.getBoolean("isMotorBike"));
+
+                auction.setAuction_id(rs.getInt("auction_id"));
+                auction.setHighest_bidder_id(rs.getString("highest_bidder_id"));
+                auction.setEnd_datetime(rs.getString("end_datetime"));
                 auction.setActive(rs.getBoolean("active"));
                 auction.setUsername(rs.getString("username"));
                 auction.setAuction_id(rs.getInt("auction_id"));
@@ -115,6 +155,7 @@ public class AuctionDao {
             }
 
         } catch (SQLException e) {
+            System.out.println("caught");
             e.printStackTrace();
         }
         return auctionContainers;

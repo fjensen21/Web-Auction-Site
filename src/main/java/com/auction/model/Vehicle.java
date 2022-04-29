@@ -100,4 +100,14 @@ public class Vehicle {
     public void setMotorcycle(boolean motorcycle) {
         isMotorcycle = motorcycle;
     }
+
+    public boolean getIsCar(){
+        return isCar;
+    }
+    public boolean getIsTruck(){
+        return isTruck;
+    }
+    public boolean getIsMotorcycle(){
+        return isMotorcycle;
+    }
 }
