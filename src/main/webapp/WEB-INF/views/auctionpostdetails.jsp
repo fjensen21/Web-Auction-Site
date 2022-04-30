@@ -36,11 +36,12 @@
 <h4>Auction End Datetime: ${auction.end_datetime}</h4>
 
 <h1>Bidding Info</h1>
-<p>Highest Bid</p>
+<h6>Current Highest Bid: ${highestBid.amount} by ${highestBid.username}</h6>
 <p>Make Bid</p>
 <form action="/placebid" method="post">
     <label for="bid">Bid:</label>
-    <input type="number" id="bid" name="bid" step="${auction.increment}">
+    <input type="number" id="bid" name="bid" step="${auction.increment}" min="${highestBid.amount + auction.increment}">
+    <input type="hidden" name="auctionid" value="${auction.auction_id}">
 <%--    add min= currenthighest + auction increment--%>
     <input type="submit">
 </form>

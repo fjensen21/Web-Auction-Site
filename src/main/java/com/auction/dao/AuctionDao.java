@@ -161,4 +161,18 @@ public class AuctionDao {
         return auctionContainers;
     }
 
+    public void updateHighestBid(int auctionid, String newHighestBidder){
+        String update = "update auctions set highest_bidder_id =? where auction_id=?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(update);
+            preparedStatement.setString(1, newHighestBidder);
+            preparedStatement.setInt(2, auctionid);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }
