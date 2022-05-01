@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import com.auction.model.Auction;
 import com.auction.model.AuctionContainer;
+import com.auction.model.Event;
 import com.auction.model.Vehicle;
 import com.auction.util.DbUtil;
+import com.auction.dao.EventDao;
 
 
 public class AuctionDao {
@@ -65,7 +67,15 @@ public class AuctionDao {
         } catch(SQLException e) {
             e.printStackTrace();
         }
+
+        // Post auction close event
+        try {
+            new EventDao().addAuctionCloseEvent(auction);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
 
     public AuctionContainer getAuctionContainerByAuctionId(int auctionId){
@@ -110,8 +120,63 @@ public class AuctionDao {
         }
         return null;
     }
+
+    public List<AuctionContainer> getNextNAuctionsByUser(int firstrow, int rowcount, String username, boolean active){
+        String getAuctions = "select * from vehicle, auctions, post where auctions.auction_id=post.auction_id and post.username=? and auctions.active=? and " +
+                "vehicle.vin=post.vin LIMIT ? OFFSET ?";
+        List<AuctionContainer> auctionContainers = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(getAuctions);
+            preparedStatement.setString(1, username);
+            preparedStatement.setBoolean(2, active);
+            preparedStatement.setInt(3, rowcount);
+            preparedStatement.setInt(4, firstrow);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            // For each result in results set create auction and vehicle then add to auctionContainer than add to auctionContainers
+            while(rs.next()) {
+                Auction auction = new Auction();
+                Vehicle vehicle = new Vehicle();
+                vehicle.setVin(rs.getInt("vin"));
+                vehicle.setMake(rs.getString("make"));
+                vehicle.setModel(rs.getString("model"));
+                vehicle.setYear(rs.getString("year"));
+                vehicle.setColor(rs.getString("color"));
+                vehicle.setNumdoors(rs.getInt("num_doors"));
+                vehicle.setBed_size(rs.getInt("bed_size"));
+                vehicle.setPedal_size(rs.getInt("pedal_size"));
+                vehicle.setCar(rs.getBoolean("isCar"));
+                vehicle.setTruck(rs.getBoolean("isTruck"));
+                vehicle.setMotorcycle(rs.getBoolean("isMotorBike"));
+
+                auction.setAuction_id(rs.getInt("auction_id"));
+                auction.setHighest_bidder_id(rs.getString("highest_bidder_id"));
+                auction.setEnd_datetime(rs.getString("end_datetime"));
+                auction.setActive(rs.getBoolean("active"));
+                auction.setUsername(rs.getString("username"));
+                auction.setAuction_id(rs.getInt("auction_id"));
+                auction.setPost_datetime(rs.getString("post_datetime"));
+                auction.setVin(rs.getInt("vin"));
+                auction.setSecret_minimum(rs.getDouble("secret_minimum"));
+                auction.setIncrement(rs.getDouble("increment"));
+                auction.setInitial_price(rs.getDouble("initial_price"));
+
+                AuctionContainer ac = new AuctionContainer(auction, vehicle);
+                auctionContainers.add(ac);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("caught");
+            e.printStackTrace();
+        }
+        return auctionContainers;
+    }
+
     public List<AuctionContainer> getNextNAuctions(int firstrow, int rowcount){
-        String getAuctions = "select * from vehicle, auctions, post where auctions.auction_id=post.auction_id and vehicle.vin=post.vin LIMIT ? OFFSET ?;";
+        String getAuctions = "select * from vehicle, auctions, post where auctions.auction_id=post.auction_id and vehicle.vin=post.vin and auctions.active=1 LIMIT ? OFFSET ?;";
         List<AuctionContainer> auctionContainers = new ArrayList<>();
 
         try {

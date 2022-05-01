@@ -20,7 +20,7 @@
     <a href="/logout">Logout</a>
 </nav>
 
-<h1>Active Auctions</h1>
+<h1>Inactive Auctions</h1>
 
 <table>
     <c:forEach items="${auctions}" var="auction">
@@ -28,7 +28,7 @@
             <td style="padding: 5px">${auction.vehicleDetails}</td>
             <td style="padding: 5px">${auction.userPosted}</td>
             <td style="padding: 5px">
-                <form action="/auctionpostdetail" method="post">
+                <form action="/inactiveauctiondetail" method="post">
                     <input type="hidden" name="auctionid" value="${auction.auction_id}">
                     <input type="submit" name="view" value="View Details">
                 </form>
@@ -36,7 +36,7 @@
         </tr>
     </c:forEach>
 </table>
-<form action="/auctionsearch" method="post">
+<form action="/myinactiveauctions" method="post">
     <input type="hidden" name="firstrow" value="${firstrow}">
     <input type="hidden" name="rowcount" value="${rowcount}">
     <input type="submit" name="page" value="next">
