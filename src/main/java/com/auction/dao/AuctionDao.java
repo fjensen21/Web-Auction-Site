@@ -31,11 +31,11 @@ public class AuctionDao {
         return false;
     }
 
-
+// TODO: update all auction things to reflect winner column
     public void addAuction(Auction auction){
         // Create Auction row
-        String addAuction = "insert into auctions(auction_id,highest_bidder_id,end_datetime,active)" +
-                "values(?,?,?,?)";
+        String addAuction = "insert into auctions(auction_id,highest_bidder_id,end_datetime,active,winner)" +
+                "values(?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement(addAuction);
@@ -44,6 +44,7 @@ public class AuctionDao {
             preparedStatement.setString(2, auction.getHighest_bidder_id());
             preparedStatement.setString(3, auction.getEnd_datetime());
             preparedStatement.setBoolean(4, auction.isActive());
+            preparedStatement.setString(5, auction.getWinner());
             preparedStatement.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
