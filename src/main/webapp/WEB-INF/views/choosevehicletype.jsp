@@ -16,7 +16,7 @@
     <a href="/profile">Profile</a>
     <a href="#">Create Auction</a>
     <a href="#">Search</a>
-    <a href="#">Customer Service</a>
+    <a href="/customerservice">Customer Service</a>
     <a href="/logout">Logout</a>
 </nav>
 

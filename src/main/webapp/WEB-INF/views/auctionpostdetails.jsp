@@ -14,7 +14,7 @@
 <a href="/profile">Profile</a>
 <a href="/choosevehicletype">Create Auction</a>
 <a href="/auctionsearch">Search</a>
-<a href="#">Customer Service</a>
+<a href="/customerservice">Customer Service</a>
 <a href="/logout">Logout</a>
 
 <h1>Vehicle Details</h1>
