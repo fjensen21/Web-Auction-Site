@@ -50,7 +50,6 @@ public class ReportsServlet extends HttpServlet {
         }
 
         //reportsDao.getBestSellingItems();
-        //reportsDao.getEarningsPerUser();
         //reportsDao.getEarningsPerItemType();
         //reportsDao.getEarningsPerItem();
 

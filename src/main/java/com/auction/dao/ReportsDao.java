@@ -64,8 +64,8 @@ public class ReportsDao {
     public HashMap getEarningsPerUser() {
         HashMap<String,Double> ht = new HashMap<String,Double>();
         String user;
-        Double amt;
-        String userQuery = "select * from post order by username";
+        Double amt = 0.0;
+        String userQuery = "select * from post,auctions where post.auction_id = auctions.auction_id and auctions.active=false";
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(userQuery);
@@ -74,19 +74,27 @@ public class ReportsDao {
             if(rs.next()){
                 BidDao bidDao;
                 bidDao = new BidDao();
-                System.out.println("auction id : "+bidDao.getHighestBid(rs.getInt("auction_id")).getAuction_id());
-                amt = bidDao.getHighestBid(rs.getInt("auction_id")).getAmount();
-                user = rs.getString("username");
-                if(!ht.containsKey(rs.getString("username"))){
-                    ht.put(user, amt);
-                } else {
-                    amt += ht.get(user);
-                    ht.put(user,amt);
+
+                Bid b = bidDao.getHighestBid(rs.getInt("auction_id"));
+                if (b!=null){
+                    amt = b.getAmount();
+
+                    user = rs.getString("username");
+                    if(!ht.containsKey(rs.getString("username"))){
+                        ht.put(user, amt);
+                    } else {
+                        amt += ht.get(user);
+                        ht.put(user,amt);
+                    }
+                }else{
+                    user = rs.getString("username");
+                    if(!ht.containsKey(rs.getString("username"))){
+                        ht.put(user, amt);
+                    }
                 }
             }
 
             return ht;
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
