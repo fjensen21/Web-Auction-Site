@@ -1,5 +1,9 @@
+<%@ page import="com.auction.model.User" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    User user = (User)session.getAttribute("user");
+%>
 <html>
 <head>
     <title>Messages</title>
@@ -10,6 +14,9 @@
     <a href="/choosevehicletype">Create Auction</a>
     <a href="/auctionsearch">Search</a>
     <a href="/customerservice">Customer Service</a>
+    <% if (user.isCustomerRep() == true) { %>
+    <a href="/customerservicerep">Customer Representatives</a>
+    <% } %>
     <a href="/logout">Logout</a>
 </nav>
 

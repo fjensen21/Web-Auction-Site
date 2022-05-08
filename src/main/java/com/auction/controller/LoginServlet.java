@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet {
                 // Admin home
             } else if (user.isCustomerRep()) {
                 // rep home page
-                response.sendRedirect("/customerservicerep");
+                response.sendRedirect("/userhome");
 
             } else {
                 response.sendRedirect("/userhome");

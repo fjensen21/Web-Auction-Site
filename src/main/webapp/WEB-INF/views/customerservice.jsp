@@ -24,7 +24,11 @@
     <a href="/choosevehicletype">Create Auction</a>
     <a href="/auctionsearch">Search</a>
     <a href="/customerservice">Customer Service</a>
+    <% if (user.isCustomerRep() == true) { %>
+    <a href="/customerservicerep">Customer Representatives</a>
+    <% } %>
     <a href="/logout">Logout</a>
+
 </nav>
 <h1>Hi, ${user.first_name}!</h1>
 <h3>Submit a question to one of our representatives.</h3>

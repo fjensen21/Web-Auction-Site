@@ -15,10 +15,13 @@
 </head>
 <body><nav>
     <a href="/profile">Profile</a>
-    <a href="#">Create Auction</a>
-    <a href="#">Search</a>
+    <a href="/choosevehicletype">Create Auction</a>
+    <a href="/auctionsearch">Search</a>
     <a href="/customerservice">Customer Service</a>
     <a href="/logout">Logout</a>
+    <% if (user.isCustomerRep() == true) { %>
+    <a href="/customerservicerep">Customer Representatives</a>
+    <% } %>
 </nav>
 <h1>Hi, <%= user.getFirst_name()%></h1>
 <h3>Personal Information</h3>

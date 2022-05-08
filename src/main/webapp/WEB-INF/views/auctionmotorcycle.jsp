@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.auction.model.User" %><%--
   Created by IntelliJ IDEA.
   User: finnjensen
   Date: 4/19/22
@@ -6,6 +6,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    User user = (User)session.getAttribute("user");
+%>
 <html>
 <head>
     <title>Auction a motorcycle</title>
@@ -16,6 +19,9 @@
     <a href="/#">Create Auction</a>
     <a href="#">Search</a>
     <a href="/customerservice">Customer Service</a>
+    <% if (user.isCustomerRep() == true) { %>
+    <a href="/customerservicerep">Customer Representatives</a>
+    <% } %>
     <a href="/logout">Logout</a>
 </nav>
 
