@@ -29,7 +29,7 @@ public class CustomerServiceDao {
         }
     }
 
-    public ArrayList<String> getPastQuestions(User user) {
+    public ArrayList<String> getPastUnansweredQuestions(User user) {
         String getQuestionQuery = "select message from customerServiceQuestions where username = \"" + user.getUsername() + "\"";
         try {
             PreparedStatement preparedStatement =
@@ -37,13 +37,53 @@ public class CustomerServiceDao {
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<String> rsArr = new ArrayList<>();
             while (rs.next()) {
+                if (rs != null )
                 rsArr.add(rs.getString(1));
-//                System.out.println(rs.getString(1));
             }
             return rsArr;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void deleteUnansweredQuestions(User user) {
+        String getQuestionQuery = "delete from customerServiceQuestions where username = \"" + user.getUsername() + "\"";
+        try {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(getQuestionQuery);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<String> getAllAnsweredQuestions(User user) {
+        String getQA = "select question, answer from customerServiceQA where username = \"" + user.getUsername() + "\" " + "order by messagePairId";
+        try {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(getQA);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<String> rsArr = new ArrayList<>();
+            while (rs.next()) {
+                if (rs != null )
+                    rsArr.add("Question: " +  rs.getString(1) + "\nAnswer: " + rs.getString(2));
+            }
+            return rsArr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void deleteAnsweredQuestions(User user) {
+        String getQuestionQuery = "delete from customerServiceQA where username = \"" + user.getUsername() + "\"";
+        try {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(getQuestionQuery);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
