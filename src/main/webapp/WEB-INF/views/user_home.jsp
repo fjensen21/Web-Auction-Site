@@ -24,6 +24,7 @@
     <a href="/customerservicerep">Customer Representatives</a>
     <% } %>
     <a href="/logout">Logout</a>
+    <a href="/reports">Generate Report</a>
 </nav>
 
 <h4><a href="/messages">View Auction Alerts</a></h4>
