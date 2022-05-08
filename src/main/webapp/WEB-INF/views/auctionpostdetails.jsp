@@ -37,6 +37,10 @@
 
 <h1>Bidding Info</h1>
 <h6>Current Highest Bid: ${highestBid.amount} by ${highestBid.username}</h6>
+<form action="/viewbidhistory" method="post">
+    <input type="hidden" name="aucId" value="${auction.auction_id}">
+    <input type="submit" value="View Bid History">
+</form>
 <p>Make Bid</p>
 <form action="/placebid" method="post">
     <label for="bid">Bid:</label>

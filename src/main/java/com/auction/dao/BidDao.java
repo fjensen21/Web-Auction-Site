@@ -72,4 +72,27 @@ public class BidDao {
         }
         return usernames;
     }
+
+    public ArrayList<Bid> getBids(int aucId) {
+        String query = "select * from bid where auction_id=?";
+        ArrayList<Bid> bids = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, aucId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Bid b = new Bid();
+                b.setAuction_id(rs.getInt("auction_id"));
+                b.setBid_datetime(rs.getString("bid_datetime"));
+                b.setUsername(rs.getString("username"));
+                b.setAmount(rs.getDouble("amount"));
+
+                bids.add(b);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return bids;
+    }
 }

@@ -20,7 +20,7 @@
     <a href="/logout">Logout</a>
 </nav>
 
-<h4><a href="/messages">View My Messages</a></h4>
+<h4><a href="/messages">View Auction Alerts</a></h4>
 
 <h3><a href="/myinactiveauctions">View Closed Auctions</a></h3>
 </body>

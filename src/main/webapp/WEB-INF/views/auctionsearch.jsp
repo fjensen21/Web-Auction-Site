@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Search</title>
 </head>
 <body>
 <nav>
@@ -19,6 +19,8 @@
     <a href="#">Customer Service</a>
     <a href="/logout">Logout</a>
 </nav>
+
+<h4><a href="/advancedsearch">Use Advanced Search</a></h4>
 
 <h1>Active Auctions</h1>
 
