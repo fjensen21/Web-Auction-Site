@@ -1,6 +1,7 @@
 package com.auction.controller;
 
 import com.auction.dao.BidDao;
+import com.auction.dao.MessageDao;
 import com.auction.model.Bid;
 import com.auction.model.User;
 
@@ -10,6 +11,7 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @WebServlet(name = "PlaceBidServlet", value = "/placebid")
 public class PlaceBidServlet extends HttpServlet {
@@ -36,9 +38,21 @@ public class PlaceBidServlet extends HttpServlet {
         try {
             bidDao = new BidDao();
             bidDao.addBid(b);
+            MessageDao msgDao = new MessageDao();
+
+            // Send a message to everyone that a new highest bid has been posted
+
+            ArrayList<String> usernames;
+            usernames = bidDao.getBidders(auctionId);
+            String msg = "A new highest bid of " + bidAmount + " has been posted on auction " + auctionId;
+            for(String username : usernames) {
+                msgDao.addMessage(msg, username);
+            }
         } catch(SQLException e) {
             e.printStackTrace();
         }
+
+
         response.sendRedirect("/userhome");
     }
 }

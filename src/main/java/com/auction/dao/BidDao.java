@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class BidDao {
 
@@ -53,5 +54,22 @@ public class BidDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ArrayList<String> getBidders(int aucId) {
+        String query = "select username from bid where auction_id=?";
+        ArrayList<String> usernames = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, aucId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                usernames.add(rs.getString("username"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return usernames;
     }
 }

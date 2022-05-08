@@ -18,7 +18,6 @@ public class Auction {
     private double initial_price;
     private boolean active;
 
-    private String winner;
 
     public Auction() {
         this.auction_id = generateUniqueAuctionId();
@@ -42,13 +41,6 @@ public class Auction {
         return id;
     }
 
-    public String getWinner() {
-        return winner;
-    }
-
-    public void setWinner(String winner) {
-        this.winner = winner;
-    }
 
     public boolean isActive() {
         return active;
