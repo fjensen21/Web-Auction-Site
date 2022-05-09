@@ -26,7 +26,7 @@ public class ReportsServlet extends HttpServlet {
             ReportsDao reportsDao = new ReportsDao();
             String bestBuyer = reportsDao.getBestBuyer();
             request.setAttribute("bestBuyer",bestBuyer);
-            System.out.println(bestBuyer);
+
         } catch(SQLException e) {
             e.printStackTrace();
         }
@@ -35,7 +35,7 @@ public class ReportsServlet extends HttpServlet {
             ReportsDao reportsDao = new ReportsDao();
             Double totalEarnings = reportsDao.getTotalEarnings();
             request.setAttribute("totalEarnings",totalEarnings);
-            System.out.println(totalEarnings);
+
         } catch(SQLException e) {
             e.printStackTrace();
         }
@@ -44,14 +44,38 @@ public class ReportsServlet extends HttpServlet {
             ReportsDao reportsDao = new ReportsDao();
             HashMap<String, Double> earningsPerUser = reportsDao.getEarningsPerUser();
             request.setAttribute("earningsPerUser",earningsPerUser);
-            System.out.println(earningsPerUser);
+
         } catch(SQLException e) {
             e.printStackTrace();
         }
 
-        //reportsDao.getBestSellingItems();
-        //reportsDao.getEarningsPerItemType();
-        //reportsDao.getEarningsPerItem();
+        try {
+            ReportsDao reportsDao = new ReportsDao();
+            HashMap<Integer, Double> earningsPerItem = reportsDao.getEarningsPerItem();
+            request.setAttribute("earningsPerItem",earningsPerItem);
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            ReportsDao reportsDao = new ReportsDao();
+            ArrayList<Double> earningsPerItemType = reportsDao.getEarningsPerItemType();
+            request.setAttribute("earningsPerItemType",earningsPerItemType);
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            ReportsDao reportsDao = new ReportsDao();
+            String bestItem = reportsDao.getBestSellingItems();
+            request.setAttribute("bestItem",bestItem);
+
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+
 
         getServletContext().getRequestDispatcher("/WEB-INF/views/reports.jsp").forward(request, response);
     }

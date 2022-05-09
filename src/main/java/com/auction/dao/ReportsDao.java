@@ -51,7 +51,11 @@ public class ReportsDao {
             if(rs.next()){
                 BidDao bidDao;
                 bidDao = new BidDao();
-                sum += bidDao.getHighestBid(rs.getInt("auction_id")).getAmount();
+
+                Bid b = bidDao.getHighestBid(rs.getInt("auction_id"));
+                if(b!=null){
+                    sum+=b.getAmount();
+                }
             }
 
             return sum;
@@ -71,26 +75,29 @@ public class ReportsDao {
                     connection.prepareStatement(userQuery);
             ResultSet rs = preparedStatement.executeQuery();
 
-            if(rs.next()){
-                BidDao bidDao;
-                bidDao = new BidDao();
+            for(int i=0; i<100; i++){
+                if(rs.next()){
+                    amt=0.0;
+                    BidDao bidDao;
+                    bidDao = new BidDao();
 
-                Bid b = bidDao.getHighestBid(rs.getInt("auction_id"));
-                if (b!=null){
-                    amt = b.getAmount();
+                    Bid b = bidDao.getHighestBid(rs.getInt("auction_id"));
+                    if (b!=null){
+                        amt = b.getAmount();
+                        user = rs.getString("username");
+                        if(!ht.containsKey(user)){
+                            ht.put(user, amt);
+                        } else {
+                            amt += ht.get(user);
+                            ht.put(user,amt);
+                        }
+                    }else{
+                        user = rs.getString("username");
+                        if(!ht.containsKey(user)){
+                            ht.put(user, amt);
+                        }
+                    }
 
-                    user = rs.getString("username");
-                    if(!ht.containsKey(rs.getString("username"))){
-                        ht.put(user, amt);
-                    } else {
-                        amt += ht.get(user);
-                        ht.put(user,amt);
-                    }
-                }else{
-                    user = rs.getString("username");
-                    if(!ht.containsKey(rs.getString("username"))){
-                        ht.put(user, amt);
-                    }
                 }
             }
 
@@ -104,15 +111,19 @@ public class ReportsDao {
     public String getBestSellingItems() {
         try {
             ReportsDao reportsDao = new ReportsDao();
-            double[] temp = reportsDao.getEarningsPerItemType();
+
+            ArrayList<Double> temp = reportsDao.getEarningsPerItemType();
             int index = -1;
             double max = 0;
-            for(int i=0; i<temp.length; i++){
-                if (temp[i] > max) {
-                    max = temp[i];
+
+            for(int i=0; i<temp.size(); i++){
+
+                if (temp.get(i) > max) {
+                    max = temp.get(i);
                     index = i;
                 }
             }
+
 
             //what item is it
             String item;
@@ -131,26 +142,36 @@ public class ReportsDao {
     }
 
     public HashMap<Integer, Double> getEarningsPerItem(){
-        String itemQuery = "SELECT a.auction_id FROM auction a , post p , vin v WHERE p.vin = v.vin, a.auction_id = p.auction ID";
-
+        String itemQuery = "SELECT p.auction_id,v.vin FROM auctions a, post p, vehicle v WHERE p.vin = v.vin and a.auction_id = p.auction_id";
         try {
             PreparedStatement preparedStatement =
                     connection.prepareStatement(itemQuery);
             ResultSet rs = preparedStatement.executeQuery();
 
             HashMap<Integer,Double> ht = new HashMap<Integer, Double>();
-            if(rs.next()){
-                Double amt=0.0;
-                BidDao bidDao;
-                bidDao = new BidDao();
-                amt = bidDao.getHighestBid(rs.getInt("auction_id")).getAmount();
+            for(int i=0; i<30; i++){
+                if(rs.next()){
+                    Double amt=0.0;
+                    BidDao bidDao;
+                    bidDao = new BidDao();
 
-                Integer vin = rs.getInt("vin");
-                if(!ht.containsKey(vin)){
-                    ht.put(vin,amt);
-                } else {
-                    amt += ht.get(vin);
-                    ht.put(vin,amt);
+                    Bid b = bidDao.getHighestBid(rs.getInt("auction_id"));
+
+                    Integer vin = rs.getInt("vin");
+
+                    if(b!=null){
+                        if(!ht.containsKey(vin)){
+                            amt=b.getAmount();
+                            ht.put(vin,amt);
+                        } else {
+                            amt += ht.get(vin);
+                            ht.put(vin,amt);
+                        }
+                    }else{
+                        if(!ht.containsKey(vin)){
+                            ht.put(vin,amt);
+                        }
+                    }
                 }
             }
 
@@ -162,46 +183,65 @@ public class ReportsDao {
 
     }
 
-    public double[] getEarningsPerItemType() {
+    public ArrayList<Double> getEarningsPerItemType() {
         //Position in array correspond to type sum
         // 0 = car, 1 = truck, 2 = motorbike
-        double[] items = new double[3];
+        ArrayList<Double> items = new ArrayList<Double>(3);
 
-        String carQuery = "SELECT a.auction_id FROM auction a , post p , vin v WHERE p.vin = v.vin, a.auction_id = p.auction ID AND v.isCar = 1";
-        String truckQuery = "SELECT a.auction_id FROM auction a , post p , vin v WHERE p.vin = v.vin, a.auction_id = p.auction ID AND v.isTruck = 1";
-        String motorbikeQuery = "SELECT a.auction_id FROM auction a , post p , vin v WHERE p.vin = v.vin, a.auction_id = p.auction ID AND v.isMotorBike = 1";
+        String carQuery = "SELECT a.auction_id FROM auctions a, post p, vehicle v WHERE p.vin = v.vin and a.auction_id = p.auction_id AND v.isCar = true";
+        String truckQuery = "SELECT a.auction_id FROM auctions a, post p, vehicle v WHERE p.vin = v.vin and a.auction_id = p.auction_id AND v.isTruck = true";
+        String motorbikeQuery = "SELECT a.auction_id FROM auctions a, post p, vehicle v WHERE p.vin = v.vin and a.auction_id = p.auction_id AND v.isMotorBike = true";
         try {
             PreparedStatement preparedCarStatement =
                     connection.prepareStatement(carQuery);
             ResultSet rs = preparedCarStatement.executeQuery();
+
             PreparedStatement preparedTruckStatement =
                     connection.prepareStatement(truckQuery);
             ResultSet rs2 = preparedTruckStatement.executeQuery();
+
             PreparedStatement preparedMotorBikeStatement =
                     connection.prepareStatement(motorbikeQuery);
             ResultSet rs3 = preparedMotorBikeStatement.executeQuery();
+
             Double carSum = 0.0;
             Double truckSum = 0.0;
-            Double motorbikeSum =0.0;
-            if(rs.next()){
-                BidDao bidDao;
-                bidDao = new BidDao();
-                carSum += bidDao.getHighestBid(rs.getInt("auction_id")).getAmount();
-            }
-            if(rs2.next()){
-                BidDao bidDao;
-                bidDao = new BidDao();
-                truckSum += bidDao.getHighestBid(rs.getInt("auction_id")).getAmount();
-            }
-            if(rs3.next()){
-                BidDao bidDao;
-                bidDao = new BidDao();
-                motorbikeSum += bidDao.getHighestBid(rs.getInt("auction_id")).getAmount();
+            Double motorbikeSum = 0.0;
+
+            for(int i=0; i<25; i++){
+                if(rs.next()){
+                    BidDao bidDao;
+                    bidDao = new BidDao();
+
+                    Bid b = bidDao.getHighestBid(rs.getInt("auction_id"));
+                    if(b!=null){
+                        carSum += b.getAmount();
+                    }
+                }
+                if(rs2.next()){
+                    BidDao bidDao;
+                    bidDao = new BidDao();
+
+                    Bid b = bidDao.getHighestBid(rs2.getInt("auction_id"));
+                    if(b!=null){
+                        truckSum += b.getAmount();
+                    }
+                }
+                if(rs3.next()){
+                    BidDao bidDao;
+                    bidDao = new BidDao();
+
+                    Bid b = bidDao.getHighestBid(rs3.getInt("auction_id"));
+                    if(b!=null){
+                        motorbikeSum += b.getAmount();
+                    }
+                }
             }
 
-            items[0] = carSum;
-            items[1] = truckSum;
-            items[2] = motorbikeSum;
+            items.add(0,carSum);
+            items.add(1,truckSum);
+            items.add(2,motorbikeSum);
+
             return items;
         } catch (SQLException e) {
             e.printStackTrace();

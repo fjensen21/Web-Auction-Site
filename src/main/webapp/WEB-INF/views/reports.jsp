@@ -45,6 +45,41 @@
                 <td style="padding: 5px">${earningsPerUser}</td>
             </tr>
         </c:forEach>
+
+
+    </table>
+
+    <h3>Earnings Per Item</h3>
+    <table>
+        <tr>
+            <td style="padding: 5px">Vehicle ID , Earnings</td>
+        </tr>
+        <c:forEach items="${earningsPerItem}" var="earningsPerItem">
+            <tr>
+                <td style="padding: 5px">${earningsPerItem}</td>
+            </tr>
+        </c:forEach>
+    </table>
+
+    <h3>Earnings Per Item Type</h3>
+    <table>
+        <tr>
+            <td style="padding: 5px">Car , Truck , MotorBike</td>
+        </tr>
+        <c:forEach items="${earningsPerItemType}" var="earningsPerItemType">
+            <tr>
+                <td style="padding: 5px">${earningsPerItemType}</td>
+            </tr>
+        </c:forEach>
+    </table>
+
+    <h3>Best Selling Item</h3>
+    <table>
+        <c:forEach items="${bestItem}" var="bestItem">
+            <tr>
+                <td style="padding: 5px">${bestItem}</td>
+            </tr>
+        </c:forEach>
     </table>
 
 </form>
